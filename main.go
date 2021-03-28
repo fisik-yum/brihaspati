@@ -34,10 +34,10 @@ func main() {
 
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll("users", 0755)
+		os.MkdirAll("guilds", 0755)
 		if errDir != nil {
 			log.Fatal(err)
 		}
-
 	}
 
 	// Register the messageCreate func as a callback for MessageCreate events.
