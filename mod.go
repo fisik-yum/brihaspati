@@ -19,10 +19,9 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		fmt.Println(toKick)
 		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 		if auth.CodeState(m.Author.ID) && state { //check if user has permissions to kick
-			for x := 0; x < len(toKick); x++ { //recursion to kick all mentioned users
-				s.GuildMemberDelete(m.GuildID, toKick[x].ID)
+			if moderation.BatchKick(toKick, m.GuildID, s) {
+				s.ChannelMessageSend(m.ChannelID, "`Batch Kick Success!`")
 			}
-			s.ChannelMessageSend(m.ChannelID, "`Batch Kick Success!`")
 		}
 	}
 
@@ -35,8 +34,9 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 		if auth.CodeState(m.Author.ID) && state { //check if user has permissions to kick
 			s.GuildMemberDelete(m.GuildID, toKick[0].ID)
+			s.ChannelMessageSend(m.ChannelID, ("`Kicked User " + toKick[0].Username + "`"))
 		}
-		s.ChannelMessageSend(m.ChannelID, ("`Kicked User " + toKick[0].Username + "`"))
+
 	}
 
 	if utils.StartsWith(m.Content, "^ban") { //allow single ban
