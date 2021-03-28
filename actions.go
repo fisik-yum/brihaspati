@@ -1,0 +1,24 @@
+package main
+
+import (
+	"brihaspati/auth"
+	"brihaspati/utils"
+
+	"github.com/bwmarrin/discordgo"
+)
+
+func ListenForAction(s *discordgo.Session, m *discordgo.MessageCreate) { //temporarily exported
+	if m.Content == "^getcode" {
+		s.ChannelMessageSend(m.ChannelID, "DMed your code!")
+		dmChannel, _ := s.UserChannelCreate(m.Author.ID)
+		_, _ = s.ChannelMessageSend(dmChannel.ID, "Code "+auth.CreateCode(m.Author.ID))
+
+	}
+
+	if utils.StartsWith(m.Content, "^authcode") == true { //test block of code
+		if auth.ValidateCode(m.Author.ID, m.Content) {
+			dmChannel, _ := s.UserChannelCreate(m.Author.ID)
+			_, _ = s.ChannelMessageSend(dmChannel.ID, "Verified!")
+		}
+	}
+}
