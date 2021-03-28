@@ -1,0 +1,12 @@
+Brihaspati[WIP]
+
+dependencies:
+github.com/bwmarrin/discordgo
+
+compiling:
+have go in your path
+$ go build
+
+running:
+./brihaspati -t <token>
+
