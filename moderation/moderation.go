@@ -22,3 +22,10 @@ func CheckForPerms(roles []string, guildID string, cInt int, s *discordgo.Sessio
 	fmt.Println("ERR with CHECK")
 	return false
 }
+
+func BatchKick(toKick []*discordgo.User, guildID string, s *discordgo.Session) bool {
+	for x := 0; x < len(toKick); x++ { //recursion to kick all mentioned users
+		s.GuildMemberDelete(guildID, toKick[x].ID)
+	}
+	return true
+}
