@@ -115,34 +115,3 @@ func CreateMuteRole(guildID string, s *discordgo.Session) bool {
 	return true
 
 }
-func Mute(ChannelID, userID, gID string, s *discordgo.Session) bool {
-	role, err := s.GuildRoles(gID)
-	if err != nil {
-		fmt.Println(err)
-		return false
-	}
-	if CheckIfMuteExists(gID, role) {
-		channels, err := s.GuildChannels(gID)
-		if err != nil {
-			fmt.Println(err)
-			return false
-		}
-		ApplyChannelOverrides(ReadItem(gID, 1), channels, s)
-		s.GuildMemberRoleAdd(gID, userID, ReadItem(gID, 1))
-		return true
-	} else {
-		fmt.Println("couldn't find role")
-		if CreateMuteRole(gID, s) {
-			channels, err := s.GuildChannels(gID)
-			if err != nil {
-				fmt.Println(err)
-				return false
-			}
-			ApplyChannelOverrides(ReadItem(gID, 1), channels, s)
-			s.GuildMemberRoleAdd(gID, userID, ReadItem(gID, 1))
-			return true
-		}
-		return false
-
-	}
-}
