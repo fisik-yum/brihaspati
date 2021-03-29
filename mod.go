@@ -16,7 +16,6 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(toKick) == 0 {
 			return
 		}
-		fmt.Println(toKick)
 		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 		if auth.CodeState(m.Author.ID) && state { //check if user has permissions to kick
 			if moderation.BatchKick(toKick, m.GuildID, s) {
@@ -30,7 +29,6 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(toKick) == 0 {
 			return
 		}
-		fmt.Println(toKick)
 		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 		if auth.CodeState(m.Author.ID) && state { //check if user has permissions to kick
 			s.GuildMemberDelete(m.GuildID, toKick[0].ID)
@@ -38,7 +36,6 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 	}
-
 	if utils.StartsWith(m.Content, "^ban") { //allow single ban
 		toBan := m.Mentions
 		if len(toBan) == 0 {
