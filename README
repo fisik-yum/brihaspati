@@ -1,5 +1,10 @@
 Brihaspati[WIP]
 
+Please let me know if there are any problems.
+As this is work-in-progress features like shard management haven't been added yet.
+
+
+
 dependencies:
 github.com/bwmarrin/discordgo
 
