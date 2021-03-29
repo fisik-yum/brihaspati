@@ -3,6 +3,7 @@ package main
 import (
 	"brihaspati/auth"
 	"brihaspati/moderation"
+	"brihaspati/roles"
 	"brihaspati/utils"
 	"fmt"
 
@@ -49,8 +50,25 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
+	if utils.StartsWith(m.Content, "^mutetest") {
+		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionVoiceMuteMembers, s)
+		mentions := m.Mentions
+		if len(mentions) == 0 {
+			return
+		}
+		if auth.CodeState(m.Author.ID) && state {
+			if roles.Mute(m.ChannelID, mentions[0].ID, m.GuildID, s) {
+				s.ChannelMessageSend(m.ChannelID, "`Mute Successful!`")
+				return
+			} else {
+				s.ChannelMessageSend(m.ChannelID, "`Mute Unsuccessful`")
+			}
+
+		}
+	}
+
 }
 
 //https://discord.com/channels/118456055842734083/155361364909621248/815116075552866334
-// These two ^ \/ conversations helped me a lot.
+// These two ^ \/ conversations helped me a lot.                                        //discord gophers server
 //https://discord.com/channels/118456055842734083/155361364909621248/820247438249426954
