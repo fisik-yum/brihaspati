@@ -39,7 +39,7 @@ func writeTo(guildID string, muteroleID string) { //extracted to a function so I
 }
 
 func readDataFromFile(id string) (record []string) { //id is to find the said .csv file
-	f, err := os.Open(filepath.Join(".", "users", id+".csv"))
+	f, err := os.Open(filepath.Join(".", "guilds", id+".csv"))
 
 	if err != nil {
 
@@ -56,13 +56,13 @@ func readDataFromFile(id string) (record []string) { //id is to find the said .c
 	return record
 }
 
-func readItem(id string, index int) string { // makes it easy to read stored data
+func ReadItem(id string, index int) string { // makes it easy to read stored data
 	return readDataFromFile(id)[index]
 }
 
-func checkIfMuteExists(guildID string, roles []*discordgo.Role) bool {
+func CheckIfMuteExists(guildID string, roles []*discordgo.Role) bool {
 	if checkIfRecordExists(guildID) {
-		if checkIfIDExists(readItem(guildID, 1), roles) {
+		if checkIfIDExists(ReadItem(guildID, 1), roles) {
 			return true
 		}
 		return false
@@ -71,7 +71,7 @@ func checkIfMuteExists(guildID string, roles []*discordgo.Role) bool {
 }
 
 func checkIfRecordExists(id string) bool { //check if the csv file exists
-	if _, err := os.Stat(filepath.Join(".", "users", id+".csv")); err == nil {
+	if _, err := os.Stat(filepath.Join(".", "guilds", id+".csv")); err == nil {
 		// path/to/whatever exists
 		return true
 	} else if os.IsNotExist(err) {
@@ -102,3 +102,47 @@ func ApplyChannelOverrides(roleID string, channels []*discordgo.Channel, s *disc
 }
 
 //TODO: add functions to create roles and apply permission overrides to all channels in a server
+
+func CreateMuteRole(guildID string, s *discordgo.Session) bool {
+	role, err := s.GuildRoleCreate(guildID)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	roleID := role.ID
+	s.GuildRoleEdit(guildID, roleID, "Muted", 122, false, 0, false)
+	writeTo(guildID, roleID)
+	return true
+
+}
+func Mute(ChannelID, userID, gID string, s *discordgo.Session) bool {
+	role, err := s.GuildRoles(gID)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	if CheckIfMuteExists(gID, role) {
+		channels, err := s.GuildChannels(gID)
+		if err != nil {
+			fmt.Println(err)
+			return false
+		}
+		ApplyChannelOverrides(ReadItem(gID, 1), channels, s)
+		s.GuildMemberRoleAdd(gID, userID, ReadItem(gID, 1))
+		return true
+	} else {
+		fmt.Println("couldn't find role")
+		if CreateMuteRole(gID, s) {
+			channels, err := s.GuildChannels(gID)
+			if err != nil {
+				fmt.Println(err)
+				return false
+			}
+			ApplyChannelOverrides(ReadItem(gID, 1), channels, s)
+			s.GuildMemberRoleAdd(gID, userID, ReadItem(gID, 1))
+			return true
+		}
+		return false
+
+	}
+}
