@@ -1,6 +1,7 @@
 package moderation
 
 import (
+	"brihaspati/roles"
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
@@ -28,4 +29,36 @@ func BatchKick(toKick []*discordgo.User, guildID string, s *discordgo.Session) b
 		s.GuildMemberDelete(guildID, toKick[x].ID)
 	}
 	return true
+}
+
+func Mute(ChannelID, userID, gID string, s *discordgo.Session) bool {
+	role, err := s.GuildRoles(gID)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	if roles.CheckIfMuteExists(gID, role) {
+		channels, err := s.GuildChannels(gID)
+		if err != nil {
+			fmt.Println(err)
+			return false
+		}
+		roles.ApplyChannelOverrides(roles.ReadItem(gID, 1), channels, s)
+		s.GuildMemberRoleAdd(gID, userID, roles.ReadItem(gID, 1))
+		return true
+	} else {
+		fmt.Println("couldn't find role")
+		if roles.CreateMuteRole(gID, s) {
+			channels, err := s.GuildChannels(gID)
+			if err != nil {
+				fmt.Println(err)
+				return false
+			}
+			roles.ApplyChannelOverrides(roles.ReadItem(gID, 1), channels, s)
+			s.GuildMemberRoleAdd(gID, userID, roles.ReadItem(gID, 1))
+			return true
+		}
+		return false
+
+	}
 }
