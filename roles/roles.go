@@ -92,3 +92,5 @@ func checkIfIDExists(id string, roles []*discordgo.Role) bool { //check if the r
 	}
 	return false
 }
+
+//TODO: add functions to create roles and apply permission overrides to all channels in a server
