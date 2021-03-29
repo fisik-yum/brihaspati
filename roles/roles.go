@@ -5,6 +5,7 @@ This is to handle code for keeping track of roles(e.g: muteroles), and creating 
 */
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -78,6 +79,7 @@ func checkIfRecordExists(id string) bool { //check if the csv file exists
 		return false
 	} else {
 		// Schrodinger: file may or may not exist. See err for details.
+		fmt.Println(err)
 		return false
 		// Therefore, do *NOT* use !os.IsNotExist(err) to test for file existence
 
@@ -91,6 +93,12 @@ func checkIfIDExists(id string, roles []*discordgo.Role) bool { //check if the r
 		}
 	}
 	return false
+}
+
+func ApplyChannelOverrides(roleID string, channels []*discordgo.Channel, s *discordgo.Session) {
+	for x := 0; x < len(channels); x++ { //cycle through each channel and apply overrides.
+		s.ChannelPermissionSet(channels[x].ID, roleID, discordgo.PermissionOverwriteTypeRole, discordgo.PermissionReadMessageHistory, 2048) //should work
+	}
 }
 
 //TODO: add functions to create roles and apply permission overrides to all channels in a server
