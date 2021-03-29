@@ -22,6 +22,7 @@ func ListenForAction(s *discordgo.Session, m *discordgo.MessageCreate) { //tempo
 		if auth.ValidateCode(m.Author.ID, m.Content) {
 			dmChannel, _ := s.UserChannelCreate(m.Author.ID)
 			_, _ = s.ChannelMessageSend(dmChannel.ID, "Verified!")
+			s.ChannelMessageDelete(m.ChannelID, m.ID)
 		}
 	}
 }
