@@ -46,8 +46,9 @@ func main() {
 	dg.AddHandler(Moderate)
 
 	// In this example, we only care about receiving message events.
-	dg.Identify.Intents = discordgo.IntentsGuildMessages
-	dg.Identify.Intents = discordgo.IntentsAll
+	//dg.Identify.Intents = discordgo.IntentsGuildMessages nopeeee
+	dg.Identify.Intents = 4679 //discordgo.IntentsAll <- unneedeed for the time being
+	//https://ziad87.net/intents/ helped me get the intents number.
 
 	//s.StateEnabled = true
 	//s.State.MaxMessageCount = 50
