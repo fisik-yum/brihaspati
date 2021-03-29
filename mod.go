@@ -3,7 +3,6 @@ package main
 import (
 	"brihaspati/auth"
 	"brihaspati/moderation"
-	"brihaspati/roles"
 	"brihaspati/utils"
 	"fmt"
 
@@ -34,6 +33,8 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if auth.CodeState(m.Author.ID) && state { //check if user has permissions to kick
 			s.GuildMemberDelete(m.GuildID, toKick[0].ID)
 			s.ChannelMessageSend(m.ChannelID, ("`Kicked User " + toKick[0].Username + "`"))
+		} else {
+			fmt.Println("err")
 		}
 
 	}
@@ -50,14 +51,14 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
-	if utils.StartsWith(m.Content, "^mutetest") {
-		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionVoiceMuteMembers, s)
+	if utils.StartsWith(m.Content, "^mute") {
+		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 		mentions := m.Mentions
 		if len(mentions) == 0 {
 			return
 		}
 		if auth.CodeState(m.Author.ID) && state {
-			if roles.Mute(m.ChannelID, mentions[0].ID, m.GuildID, s) {
+			if moderation.Mute(m.ChannelID, mentions[0].ID, m.GuildID, s) {
 				s.ChannelMessageSend(m.ChannelID, "`Mute Successful!`")
 				return
 			} else {
