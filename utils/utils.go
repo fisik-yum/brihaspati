@@ -17,6 +17,9 @@ func Contains(s []string, str string) bool {
 }
 
 func StartsWith(target string, command string) bool {
+	if len(strings.Fields(target)) == 0 {
+		return false
+	}
 	return (strings.Fields(target)[0] == command)
 
 }
