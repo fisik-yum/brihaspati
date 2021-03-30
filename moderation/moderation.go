@@ -62,3 +62,19 @@ func Mute(ChannelID, userID, gID string, s *discordgo.Session) bool {
 
 	}
 }
+
+func Unmute(ChannelID, userID, gID string, s *discordgo.Session) bool {
+	role, err := s.GuildRoles(gID)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	if roles.CheckIfMuteExists(gID, role) {
+		s.GuildMemberRoleRemove(gID, userID, roles.ReadItem(gID, 1))
+		return true
+	} else {
+		fmt.Println("couldn't find role")
+		return false
+
+	}
+}
