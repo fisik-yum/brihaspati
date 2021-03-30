@@ -68,6 +68,25 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
+	if utils.StartsWith(m.Content, "^unmute") {
+		state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
+		mentions := m.Mentions
+		if len(mentions) == 0 {
+			return
+		}
+		if auth.CodeState(m.Author.ID) && state {
+			if moderation.Unmute(m.ChannelID, mentions[0].ID, m.GuildID, s) {
+				s.ChannelMessageSend(m.ChannelID, "`Unmute Successful!`")
+				return
+			} else {
+				s.ChannelMessageSend(m.ChannelID, "`Unmute Unsuccessful`")
+			}
+
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "`ERROR`")
+		}
+	}
+
 }
 
 //https://discord.com/channels/118456055842734083/155361364909621248/815116075552866334
