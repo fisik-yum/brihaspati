@@ -97,7 +97,7 @@ func checkIfIDExists(id string, roles []*discordgo.Role) bool { //check if the r
 
 func ApplyChannelOverrides(roleID string, channels []*discordgo.Channel, s *discordgo.Session) {
 	for x := 0; x < len(channels); x++ { //cycle through each channel and apply overrides.
-		s.ChannelPermissionSet(channels[x].ID, roleID, discordgo.PermissionOverwriteTypeRole, discordgo.PermissionReadMessageHistory, 2048) //should work
+		s.ChannelPermissionSet(channels[x].ID, roleID, discordgo.PermissionOverwriteTypeRole, discordgo.PermissionReadMessageHistory, 2048) //2048 is the override value
 	}
 }
 
