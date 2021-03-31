@@ -14,5 +14,5 @@ have go in your path
 $ go build
 
 running:
-./brihaspati -t <token>
+./brihaspati -t "Bot <token>"
 

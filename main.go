@@ -17,23 +17,6 @@ var (
 	FlagLogChannel string
 )
 
-/*func main() {
-
-// Create a new Discord session using the provided bot token.
-dg, err := discordgo.New("Bot " + Token)
-if err != nil {
-	fmt.Println("error creating Discord session,", err)
-	return
-}
-_, err = os.Stat("test")
-
-if os.IsNotExist(err) {
-	errDir := os.MkdirAll("users", 0755)
-	os.MkdirAll("guilds", 0755)
-	if errDir != nil {
-		log.Fatal(err)
-	}
-}*/
 func main() {
 
 	flag.StringVar(&FlagToken, "t", "", "Discord token")
