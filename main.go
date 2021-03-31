@@ -2,75 +2,94 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
+	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/jonas747/dshardmanager"
 )
 
 // Variables used for command line parameters
 var (
-	Token string
+	FlagToken      string
+	FlagLogChannel string
 )
 
-func init() {
+/*func main() {
 
-	flag.StringVar(&Token, "t", "", "Bot Token")
-	flag.Parse()
+// Create a new Discord session using the provided bot token.
+dg, err := discordgo.New("Bot " + Token)
+if err != nil {
+	fmt.Println("error creating Discord session,", err)
+	return
 }
+_, err = os.Stat("test")
 
+if os.IsNotExist(err) {
+	errDir := os.MkdirAll("users", 0755)
+	os.MkdirAll("guilds", 0755)
+	if errDir != nil {
+		log.Fatal(err)
+	}
+}*/
 func main() {
 
-	// Create a new Discord session using the provided bot token.
-	dg, err := discordgo.New("Bot " + Token)
-	if err != nil {
-		fmt.Println("error creating Discord session,", err)
-		return
-	}
-	_, err = os.Stat("test")
+	flag.StringVar(&FlagToken, "t", "", "Discord token")
+	flag.StringVar(&FlagLogChannel, "c", "", "Log channel, optional")
+	flag.Parse()
 
-	if os.IsNotExist(err) {
-		errDir := os.MkdirAll("users", 0755)
-		os.MkdirAll("guilds", 0755)
-		if errDir != nil {
-			log.Fatal(err)
+	log.Println("Starting v" + dshardmanager.VersionString)
+	if FlagToken == "" {
+		FlagToken = os.Getenv("DG_TOKEN")
+		if FlagToken == "" {
+			log.Fatal("No token specified")
 		}
 	}
 
-	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
-	dg.AddHandler(ListenForAction)
-	dg.AddHandler(Moderate)
-
-	// In this example, we only care about receiving message events.
-	//dg.Identify.Intents = discordgo.IntentsGuildMessages nopeeee
-	dg.Identify.Intents = 4679 //discordgo.IntentsAll //<- unneedeed for the time being
-	//https://ziad87.net/intents/ helped me get the intents number.
-
-	//s.StateEnabled = true
-	//s.State.MaxMessageCount = 50
-
-	// Open a websocket connection to Discord and begin listening.
-	err = dg.Open()
-	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
+	if !strings.HasPrefix(FlagToken, "Bot ") {
+		log.Fatal("dshardmanager only works on bot accounts, did you forget to add `Bot ` before the token?")
 	}
 
-	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
+	manager := dshardmanager.New(FlagToken)
+	manager.Name = "ExampleBot"
+	manager.LogChannel = FlagLogChannel
+	manager.StatusMessageChannel = FlagLogChannel
 
-	// Cleanly close down the Discord session.
-	dg.Close()
+	recommended, err := manager.GetRecommendedCount()
+	if err != nil {
+		log.Fatal("Failed getting recommended shard count")
+	}
+	if recommended < 2 {
+		manager.SetNumShards(5)
+	}
+
+	log.Println("Starting shard manager")
+	err = manager.Start()
+	if err != nil {
+		log.Fatal("Failed to start: ", err)
+	}
+	//dg.Identify.Intents = 4679
+	log.Println("Started!")
+	manager.AddHandler(messageCreate)
+	manager.AddHandler(ListenForAction)
+	manager.AddHandler(Moderate)
+	log.Fatal(http.ListenAndServe(":7441", nil))
+	select {}
 }
 
-// message is created on any channel that the authenticated bot has access to.
+// Register the messageCreate func as a callback for MessageCreate events.
+
+// In this example, we only care about receiving message events.
+//dg.Identify.Intents = discordgo.IntentsGuildMessages nopeeee
+//discordgo.IntentsAll //<- unneedeed for the time being
+//https://ziad87.net/intents/ helped me get the intents number.
+
+//s.StateEnabled = true
+//s.State.MaxMessageCount = 50
+
+// Open a websocket connection to Discord and begin listening.
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
 	if m.Author.ID == s.State.User.ID {
