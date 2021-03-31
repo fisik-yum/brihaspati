@@ -8,7 +8,7 @@ import (
 )
 
 func CheckForPerms(roles []string, guildID string, cInt int, s *discordgo.Session) bool {
-	for x := 0; x < len(roles); x++ {
+	for x := range roles {
 		pInt, err := s.State.Role(guildID, roles[x])
 		if err != nil {
 			fmt.Println("ERR getting role")
@@ -25,7 +25,7 @@ func CheckForPerms(roles []string, guildID string, cInt int, s *discordgo.Sessio
 }
 
 func BatchKick(toKick []*discordgo.User, guildID string, s *discordgo.Session) bool {
-	for x := 0; x < len(toKick); x++ { //recursion to kick all mentioned users
+	for x := range toKick { //recursion to kick all mentioned users
 		s.GuildMemberDelete(guildID, toKick[x].ID)
 	}
 	return true

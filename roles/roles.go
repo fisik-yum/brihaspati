@@ -87,7 +87,7 @@ func checkIfRecordExists(id string) bool { //check if the csv file exists
 }
 
 func checkIfIDExists(id string, roles []*discordgo.Role) bool { //check if the role ID is still valid
-	for x := 0; x < len(roles); x++ {
+	for x := range roles {
 		if id == roles[x].ID {
 			return true
 		}
@@ -96,7 +96,7 @@ func checkIfIDExists(id string, roles []*discordgo.Role) bool { //check if the r
 }
 
 func ApplyChannelOverrides(roleID string, channels []*discordgo.Channel, s *discordgo.Session) {
-	for x := 0; x < len(channels); x++ { //cycle through each channel and apply overrides.
+	for x := range channels { //cycle through each channel and apply overrides.
 		s.ChannelPermissionSet(channels[x].ID, roleID, discordgo.PermissionOverwriteTypeRole, discordgo.PermissionReadMessageHistory, 2048) //2048 is the override value
 	}
 }
