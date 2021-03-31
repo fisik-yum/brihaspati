@@ -2,10 +2,12 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
-	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/jonas747/dshardmanager"
@@ -36,7 +38,7 @@ func main() {
 	}
 
 	manager := dshardmanager.New(FlagToken)
-	manager.Name = "ExampleBot"
+	manager.Name = "Brihaspati"
 	manager.LogChannel = FlagLogChannel
 	manager.StatusMessageChannel = FlagLogChannel
 
@@ -47,7 +49,6 @@ func main() {
 	if recommended < 2 {
 		manager.SetNumShards(5)
 	}
-
 	log.Println("Starting shard manager")
 	err = manager.Start()
 	if err != nil {
@@ -58,8 +59,16 @@ func main() {
 	manager.AddHandler(messageCreate)
 	manager.AddHandler(ListenForAction)
 	manager.AddHandler(Moderate)
-	log.Fatal(http.ListenAndServe(":7441", nil))
-	select {}
+	//log.Fatal(http.ListenAndServe(":7441", nil))
+	//select {}
+	// Wait here until CTRL-C or other term signal is received.
+	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	<-sc
+
+	// Cleanly close down the Discord session.
+	manager.StopAll()
 }
 
 // Register the messageCreate func as a callback for MessageCreate events.
