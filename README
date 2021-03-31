@@ -7,6 +7,7 @@ As this is work-in-progress features like shard management haven't been added ye
 
 dependencies:
 github.com/bwmarrin/discordgo
+github.com/jonas747/dshardmanager
 
 compiling:
 have go in your path
