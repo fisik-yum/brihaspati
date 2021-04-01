@@ -1,0 +1,9 @@
+Brihaspati- A Moderation Bot:
+^getcode ;DMs an auth token for you to verify.
+^authcode <token>; Authenticates the token for the next five minutes.
+^kick <user>; kick a single user. The person using this command MUST have a role with the permissioms to kick users.
+^kickbatch <users>; kicks multiple users at once. Same requirements as ^kick.
+^ban <user>; bans a user from a server.
+^mute <user>; Mutes user in chat. You must have permissions to kick a member. On first use, the bot auto-applies channel overrides.
+^unmute <user>; Unmutes user in chat.
+^rollcode; rolls a die
