@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -90,10 +92,38 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if m.Content == "^help" {
-		resp, err := http.Get("https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt")
+		fileUrl := "https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt"
+		err := DownloadFile("help.txt", fileUrl)
 		if err != nil {
+			panic(err)
+		}
+
+		data, err := ioutil.ReadFile("help.txt")
+		if err != nil {
+			fmt.Println("File reading error", err)
 			return
 		}
-		fmt.Println(resp)
+		s.ChannelMessageSend(m.ChannelID, string(data))
 	}
+}
+
+func DownloadFile(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
