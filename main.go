@@ -59,6 +59,7 @@ func main() {
 	manager.AddHandler(messageCreate)
 	manager.AddHandler(ListenForAction)
 	manager.AddHandler(Moderate)
+	manager.AddHandler(funStuff)
 	//log.Fatal(http.ListenAndServe(":7441", nil))
 	//select {}
 	// Wait here until CTRL-C or other term signal is received.
