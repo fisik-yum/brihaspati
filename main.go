@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -87,5 +88,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
 	if m.Author.ID == s.State.User.ID {
 		return
+	}
+	if m.Content == "^help" {
+		resp, err := http.Get("https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt")
+		if err != nil {
+			return
+		}
+		fmt.Println(resp)
 	}
 }
