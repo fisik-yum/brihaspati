@@ -45,6 +45,16 @@ func main() {
 	manager.LogChannel = FlagLogChannel
 	manager.StatusMessageChannel = FlagLogChannel
 
+	_, err := os.Stat("test")
+
+	if os.IsNotExist(err) {
+		errDir := os.MkdirAll("users", 0755)
+		os.MkdirAll("guilds", 0755)
+		if errDir != nil {
+			log.Fatal(err)
+		}
+	}
+
 	recommended, err := manager.GetRecommendedCount()
 	if err != nil {
 		log.Fatal("Failed getting recommended shard count")
@@ -75,10 +85,6 @@ func main() {
 	manager.StopAll()
 }
 
-// Register the messageCreate func as a callback for MessageCreate events.
-
-// In this example, we only care about receiving message events.
-//dg.Identify.Intents = discordgo.IntentsGuildMessages nopeeee
 //discordgo.IntentsAll //<- unneedeed for the time being
 //https://ziad87.net/intents/ helped me get the intents number.
 
