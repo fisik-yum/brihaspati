@@ -18,7 +18,7 @@ func ListenForAction(s *discordgo.Session, m *discordgo.MessageCreate) { //tempo
 
 	}
 
-	if utils.StartsWith(m.Content, "^authcode") == true { //test block of code
+	if utils.StartsWith(m.Content, "^authcode") {
 		if auth.ValidateCode(m.Author.ID, m.Content) {
 			dmChannel, _ := s.UserChannelCreate(m.Author.ID)
 			_, _ = s.ChannelMessageSend(dmChannel.ID, "Verified!")
