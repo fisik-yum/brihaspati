@@ -16,3 +16,6 @@ $ go build
 running:
 ./brihaspati -t "Bot <token>"
 
+A public instance can be added with https://discord.com/api/oauth2/authorize?client_id=798777262794735639&permissions=268511286&scope=bot
+The bot's tag is Brhaspati#1068
+
