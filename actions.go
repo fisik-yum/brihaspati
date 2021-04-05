@@ -14,14 +14,19 @@ func ListenForAction(s *discordgo.Session, m *discordgo.MessageCreate) { //tempo
 			s.ChannelMessageSend(m.ChannelID, "`DMed your code!`")
 		}
 		dmChannel, _ := s.UserChannelCreate(m.Author.ID)
-		_, _ = s.ChannelMessageSend(dmChannel.ID, "Code "+auth.CreateCode(m.Author.ID))
-
+		_, _ = s.ChannelMessageSend(dmChannel.ID, "`Code "+auth.CreateCode(m.Author.ID)+"`")
+		return
 	}
 
-	if utils.StartsWith(m.Content, "^authcode") {
-		if auth.ValidateCode(m.Author.ID, m.Content) {
+	if utils.Prefix(m.Content, "^authcode") {
+		dmChannel, _ := s.UserChannelCreate(m.Author.ID)
+
+		if m.ChannelID != dmChannel.ID {
+			s.ChannelMessageSend(m.ChannelID, "`Verify in your DMs!`")
+			return
+		} else if auth.ValidateCode(m.Author.ID, m.Content) {
 			dmChannel, _ := s.UserChannelCreate(m.Author.ID)
-			_, _ = s.ChannelMessageSend(dmChannel.ID, "Verified!")
+			_, _ = s.ChannelMessageSend(dmChannel.ID, "`Verified!`")
 			s.ChannelMessageDelete(m.ChannelID, m.ID)
 		}
 	}

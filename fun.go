@@ -1,7 +1,6 @@
 package main
 
 import (
-	"brihaspati/utils"
 	"math/rand"
 	"strconv"
 	"time"
@@ -10,9 +9,9 @@ import (
 )
 
 func funStuff(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if utils.StartsWith(m.Content, "^rolldice") {
+	if m.Content == "^rolldice" {
 		rand.Seed(time.Now().UnixNano())
-		s.ChannelMessageSend(m.ChannelID, strconv.Itoa(rand.Intn(6)))
+		s.ChannelMessageSend(m.ChannelID, "`"+strconv.Itoa(rand.Intn(6)))
 
 	}
 }

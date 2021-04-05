@@ -11,7 +11,7 @@ import (
 
 func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if auth.CodeState(m.Author.ID) {
-		if utils.StartsWith(m.Content, "^batchkick") { //allow batch kicking
+		if utils.Prefix(m.Content, "^batchkick") { //allow batch kicking
 			toKick := m.Mentions
 			if len(toKick) == 0 {
 				return
@@ -24,7 +24,7 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if utils.StartsWith(m.Content, "^kick") { //allow single kicking
+		if utils.Prefix(m.Content, "^kick") { //allow single kicking
 			toKick := m.Mentions
 			if len(toKick) == 0 {
 				return
@@ -38,7 +38,7 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 
 		}
-		if utils.StartsWith(m.Content, "^ban") { //allow single ban
+		if utils.Prefix(m.Content, "^ban") { //allow single ban
 			toBan := m.Mentions
 			if len(toBan) == 0 {
 				return
@@ -51,7 +51,7 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if utils.StartsWith(m.Content, "^mute") {
+		if utils.Prefix(m.Content, "^mute") {
 			state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 			mentions := m.Mentions
 			if len(mentions) == 0 {
@@ -68,7 +68,7 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if utils.StartsWith(m.Content, "^unmute") {
+		if utils.Prefix(m.Content, "^unmute") {
 			state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionKickMembers, s)
 			mentions := m.Mentions
 			if len(mentions) == 0 {
@@ -87,6 +87,8 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
+	} else {
+		return
 	}
 }
 

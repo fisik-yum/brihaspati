@@ -35,3 +35,12 @@ func ChannelInGuild(channelID, guildID string, s *discordgo.Session) bool {
 	}
 	return false
 }
+
+func Prefix(content string, prefix string) bool {
+	if len(content) <= len(prefix) {
+		return false
+	} else if content[0:len(prefix)] == prefix {
+		return true
+	}
+	return false
+}

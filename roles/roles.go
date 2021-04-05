@@ -21,12 +21,12 @@ func writeTo(guildID string, muteroleID string) { //extracted to a function so I
 	}
 
 	f, err := os.Create(filepath.Join(".", "guilds", guildID+".csv"))
-	defer f.Close()
-
 	if err != nil {
 		log.Fatalln("failed to open file", err)
 		return
 	}
+
+	defer f.Close()
 
 	w := csv.NewWriter(f)
 	err = w.WriteAll(records) // calls Flush internally
@@ -62,10 +62,7 @@ func ReadItem(id string, index int) string { // makes it easy to read stored dat
 
 func CheckIfMuteExists(guildID string, roles []*discordgo.Role) bool {
 	if checkIfRecordExists(guildID) {
-		if checkIfIDExists(ReadItem(guildID, 1), roles) {
-			return true
-		}
-		return false
+		return checkIfIDExists(ReadItem(guildID, 1), roles)
 	}
 	return false
 }
@@ -110,7 +107,7 @@ func CreateMuteRole(guildID string, s *discordgo.Session) bool {
 		return false
 	}
 	roleID := role.ID
-	s.GuildRoleEdit(guildID, roleID, "Muted", 122, false, 0, false)
+	s.GuildRoleEdit(guildID, roleID, "Muted", 16111426, false, 0, false)
 	writeTo(guildID, roleID)
 	return true
 
