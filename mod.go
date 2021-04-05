@@ -3,13 +3,14 @@ package main
 import (
 	"brihaspati/auth"
 	"brihaspati/moderation"
+	"brihaspati/roles"
 	"brihaspati/utils"
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
+func moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if utils.IsMentioned(s.State.User.ID, m.Mentions) {
 		s.ChannelMessageSend(m.ChannelID, "`You can't do anything to me!` ")
 	} else {
@@ -86,6 +87,15 @@ func Moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 						s.ChannelMessageSend(m.ChannelID, "`Unmute Unsuccessful`")
 					}
 
+				} else {
+					s.ChannelMessageSend(m.ChannelID, "`ERROR`")
+				}
+			}
+
+			if utils.Prefix(m.Content, "^createrole") {
+				state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionManageRoles, s)
+				if roles.CreateNewRole(m.Content[11:], m.GuildID, s) && state {
+					s.ChannelMessageSend(m.ChannelID, "`Role Created successfully!`")
 				} else {
 					s.ChannelMessageSend(m.ChannelID, "`ERROR`")
 				}
