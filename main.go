@@ -74,10 +74,12 @@ func main() {
 	}
 	//dg.Identify.Intents = 4679
 	log.Println("Started!")
-	manager.AddHandler(messageCreate)
-	manager.AddHandler(ListenForAction)
-	manager.AddHandler(Moderate)
-	manager.AddHandler(funStuff)
+
+	manager.AddHandler(messageCreate)   //help and other stuff
+	manager.AddHandler(listenForAction) //authenication
+	manager.AddHandler(moderate)        //moderation
+	manager.AddHandler(funStuff)        // fun stuff :)
+
 	//log.Fatal(http.ListenAndServe(":7441", nil))
 	//select {}
 	// Wait here until CTRL-C or other term signal is received.
