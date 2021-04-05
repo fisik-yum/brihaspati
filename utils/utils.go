@@ -44,3 +44,12 @@ func Prefix(content string, prefix string) bool {
 	}
 	return false
 }
+
+func IsMentioned(id string, mentions []*discordgo.User) bool {
+	for x := range mentions {
+		if mentions[x].ID == id {
+			return true
+		}
+	}
+	return false
+}
