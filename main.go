@@ -39,13 +39,13 @@ func main() {
 	if !strings.HasPrefix(FlagToken, "Bot ") {
 		log.Fatal("dshardmanager only works on bot accounts, did you forget to add `Bot ` before the token?")
 	}
+	fileUrl := "https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt"
+	err := DownloadFile("help.txt", fileUrl)
+	if err != nil {
+		panic(err)
+	}
 
-	manager := dshardmanager.New(FlagToken)
-	manager.Name = "Brihaspati"
-	manager.LogChannel = FlagLogChannel
-	manager.StatusMessageChannel = FlagLogChannel
-
-	_, err := os.Stat("test")
+	_, err = os.Stat("test")
 
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll("users", 0755)
@@ -54,6 +54,11 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+
+	manager := dshardmanager.New(FlagToken)
+	manager.Name = "Brihaspati"
+	manager.LogChannel = FlagLogChannel
+	manager.StatusMessageChannel = FlagLogChannel
 
 	recommended, err := manager.GetRecommendedCount()
 	if err != nil {
@@ -98,11 +103,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if m.Content == "^help" {
-		fileUrl := "https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt"
-		err := DownloadFile("help.txt", fileUrl)
-		if err != nil {
-			panic(err)
-		}
 
 		data, err := ioutil.ReadFile("help.txt")
 		if err != nil {
