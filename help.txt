@@ -9,4 +9,5 @@
 ^rollcode; rolls a die.
 ^ghostping <Users>; Ghost Ping a User[this is annoying].
 ^help; help dialog.
+^createrole <name>,<color>; color files must exist locally for this to work.
 `
