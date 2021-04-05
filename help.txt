@@ -6,6 +6,7 @@
 ^ban <user>; bans a user from a server.
 ^mute <user>; Mutes user in chat. You must have permissions to kick a member. On first use, the bot auto-applies channel overrides.
 ^unmute <user>; Unmutes user in chat.
-^rollcode; rolls a die
+^rollcode; rolls a die.
+^ghostping <Users>; Ghost Ping a User[this is annoying].
 ^help; help dialog.
 `
