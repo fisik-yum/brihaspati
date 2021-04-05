@@ -7,7 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func ListenForAction(s *discordgo.Session, m *discordgo.MessageCreate) { //temporarily exported
+func ListenForAction(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Content == "^getcode" {
 
 		if utils.ChannelInGuild(m.ChannelID, m.GuildID, s) {
