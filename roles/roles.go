@@ -4,12 +4,14 @@ package roles
 This is to handle code for keeping track of roles(e.g: muteroles), and creating overrides for guild channels
 */
 import (
+	"brihaspati/utils"
 	"encoding/csv"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -110,5 +112,27 @@ func CreateMuteRole(guildID string, s *discordgo.Session) bool {
 	s.GuildRoleEdit(guildID, roleID, "Muted", 16111426, false, 0, false)
 	writeTo(guildID, roleID)
 	return true
+
+}
+
+func CreateNewRole(message string, guildID string, s *discordgo.Session) bool { // format ^createrole name,color
+	items := strings.Split(message, ",")
+	if len(items) < 2 {
+		return false
+	}
+	name := items[0]
+	color := strings.ToLower(items[1])
+	cMap := utils.LoadColors().Colors
+
+	if val, ok := cMap[color]; !ok {
+		return false
+	} else {
+		cRole, err := s.GuildRoleCreate(guildID)
+		if err != nil {
+			return false
+		}
+		s.GuildRoleEdit(guildID, cRole.ID, name, val, true, 0, true)
+		return true
+	}
 
 }
