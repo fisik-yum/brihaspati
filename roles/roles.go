@@ -125,7 +125,13 @@ func CreateNewRole(message string, guildID string, s *discordgo.Session) bool { 
 	cMap := utils.LoadColors().Colors
 
 	if val, ok := cMap[color]; !ok {
-		return false
+		val = 8421504
+		cRole, err := s.GuildRoleCreate(guildID)
+		if err != nil {
+			return false
+		}
+		s.GuildRoleEdit(guildID, cRole.ID, name, val, true, 0, true)
+		return true
 	} else {
 		cRole, err := s.GuildRoleCreate(guildID)
 		if err != nil {
