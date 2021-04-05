@@ -1,7 +1,7 @@
 `Brihaspati- A Moderation Bot:
 ^getcode ;DMs an auth token for you to verify.
 ^authcode <token>; Authenticates the token for the next five minutes.
-^kick <user>; kick a single user. The person using this command MUST have a role with the permissioms to kick users.
+^kick <user>; kick a single user. The person using this command MUST have a role with the permissions to kick users.
 ^kickbatch <users>; kicks multiple users at once. Same requirements as ^kick.
 ^ban <user>; bans a user from a server.
 ^mute <user>; Mutes user in chat. You must have permissions to kick a member. On first use, the bot auto-applies channel overrides.
@@ -9,5 +9,5 @@
 ^rollcode; rolls a die.
 ^ghostping <Users>; Ghost Ping a User[this is annoying].
 ^help; help dialog.
-^createrole <name>,<color>; color files must exist locally for this to work.
+^createrole <name>,<color>; color files must exist locally for this to work, and user must have "Manage roles permissions".
 `
