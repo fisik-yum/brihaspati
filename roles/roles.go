@@ -4,7 +4,7 @@ package roles
 This is to handle code for keeping track of roles(e.g: muteroles), and creating overrides for guild channels
 */
 import (
-	"brihaspati/utils"
+	"brihaspati/colors"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -117,7 +117,7 @@ func CreateMuteRole(guildID string, s *discordgo.Session) bool {
 
 func CreateNewRole(message string, guildID string, s *discordgo.Session) bool { // format ^createrole name,color
 	items := strings.Split(message, ",")
-	loadC := utils.LoadColors()
+	loadC := colors.LoadColors()
 	cMap := loadC.Colors
 	if len(items) < 2 || !loadC.State {
 		return false

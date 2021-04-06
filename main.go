@@ -50,6 +50,7 @@ func main() {
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll("users", 0755)
 		os.MkdirAll("guilds", 0755)
+		os.MkdirAll("resources", 0755)
 		if errDir != nil {
 			log.Fatal(err)
 		}

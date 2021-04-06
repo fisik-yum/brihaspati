@@ -1,12 +1,6 @@
 package utils
 
 import (
-	"encoding/csv"
-	"io"
-	"log"
-	"os"
-	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -58,69 +52,4 @@ func IsMentioned(id string, mentions []*discordgo.User) bool {
 		}
 	}
 	return false
-}
-
-func LoadColors() ColorData {
-	colorN, err := os.Open(filepath.Join(".", "colorN.csv"))
-
-	if err != nil {
-		x := ColorData{
-			Colors: make(map[string]int),
-			State:  false,
-		}
-		return x
-	}
-
-	colorD, err := os.Open(filepath.Join(".", "colorD.csv"))
-
-	if err != nil {
-		x := ColorData{
-			Colors: make(map[string]int),
-			State:  false,
-		}
-		return x
-	}
-	r := csv.NewReader(colorN)
-	names, err := r.Read()
-
-	if err == io.EOF {
-		log.Fatal(err)
-		x := ColorData{
-			Colors: make(map[string]int),
-			State:  false,
-		}
-		return x
-	}
-
-	r = csv.NewReader(colorD)
-	values, err := r.Read()
-
-	if err == io.EOF || (len(names) != len(values)) {
-		log.Fatal(err)
-		x := ColorData{
-			Colors: make(map[string]int),
-			State:  false,
-		}
-		return x
-	}
-
-	m := make(map[string]int)
-	for x := range names { //load all colors into a map
-		val, err := strconv.Atoi(values[x])
-		if err != nil {
-			break
-		}
-		m[names[x]] = val
-	}
-	x := ColorData{
-		Colors: m,
-		State:  true,
-	}
-	return x
-}
-
-//define data structures below this point
-type ColorData struct {
-	Colors map[string]int
-	State  bool
 }
