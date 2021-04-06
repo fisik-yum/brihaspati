@@ -1,6 +1,7 @@
 package main
 
 import (
+	"brihaspati/colors"
 	"flag"
 	"fmt"
 	"io"
@@ -27,7 +28,6 @@ func main() {
 	flag.StringVar(&FlagToken, "t", "", "Discord token")
 	flag.StringVar(&FlagLogChannel, "c", "", "Log channel, optional")
 	flag.Parse()
-
 	log.Println("Starting v" + dshardmanager.VersionString)
 	if FlagToken == "" {
 		FlagToken = os.Getenv("DG_TOKEN")
@@ -113,6 +113,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		s.ChannelMessageSend(m.ChannelID, string(data))
+	}
+	if m.Content == "^test" { //test block
+		colorD := colors.LoadColors()
+		colorM := colors.ListColors(colorD)
+		s.ChannelMessageSend(m.ChannelID, "`List of colors:`")
+		s.ChannelMessageSend(m.ChannelID, "`"+strings.Join(colorM, ",")+"`")
 	}
 }
 
