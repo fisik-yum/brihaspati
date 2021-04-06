@@ -114,7 +114,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		s.ChannelMessageSend(m.ChannelID, string(data))
 	}
-	if m.Content == "^test" { //test block
+	if m.Content == "^colors" { //test block
 		colorD := colors.LoadColors()
 		colorM := colors.ListColors(colorD)
 		s.ChannelMessageSend(m.ChannelID, "`List of colors:`")
