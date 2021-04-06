@@ -21,10 +21,11 @@ func LoadColors() ColorData {
 
 	colorsF, err := os.Open(filepath.Join(".", "resources", "colors.csv"))
 
+	//however these errors are far more important, and I really want to catch them
 	if err != nil {
 		x := ColorData{
 			Colors: make(map[string]int),
-			State:  true, //ensure that even if the file doesn't exist,we use a fallback color
+			State:  false,
 		}
 		return x
 	}
@@ -32,7 +33,6 @@ func LoadColors() ColorData {
 	r := csv.NewReader(colorsF)
 	colors, err := r.Read()
 
-	//however these errors are far more important, and I really want to catch them
 	if err == io.EOF {
 		log.Fatal(err)
 		x := ColorData{
@@ -41,12 +41,14 @@ func LoadColors() ColorData {
 		}
 		return x
 	}
-
 	m := make(map[string]int)
-	for x := 0; x < (len(colors)); x = x + 2 { //load all colors into a map. Each color is an even index[inc. 0], while each color value is an odd index.
+	for x := 0; x < len(colors); x += 2 { //load all colors into a map. Each color is an even index[inc. 0], while each color value is an odd index.
 		val, err := strconv.Atoi(colors[x+1])
 		if err != nil {
 			break
+		}
+		if x%2 == 1 {
+			continue
 		}
 		m[colors[x]] = val
 	}
@@ -61,4 +63,15 @@ func LoadColors() ColorData {
 type ColorData struct {
 	Colors map[string]int
 	State  bool
+}
+
+func ListColors(cd ColorData) []string {
+	keys := make([]string, 0, len(cd.Colors))
+	values := make([]int, 0, len(cd.Colors))
+
+	for k, v := range cd.Colors {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+	return keys
 }
