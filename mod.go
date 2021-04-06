@@ -95,7 +95,7 @@ func moderate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if utils.Prefix(m.Content, "^createrole") {
 				state := moderation.CheckForPerms(m.Member.Roles, m.GuildID, discordgo.PermissionManageRoles, s)
 				if state {
-					if roles.CreateNewRole(m.Content[11:], m.GuildID, s) {
+					if roles.CreateNewRole(m.Content[11:], m.GuildID, ColorMap(), s) {
 						s.ChannelMessageSend(m.ChannelID, "`Role Created successfully!`")
 					}
 				} else {

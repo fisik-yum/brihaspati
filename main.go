@@ -21,6 +21,7 @@ import (
 var (
 	FlagToken      string
 	FlagLogChannel string
+	colorS         colors.ColorData
 )
 
 func main() {
@@ -55,12 +56,12 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+	colorS = colors.LoadColors() //cache colors on startup
 
 	manager := dshardmanager.New(FlagToken)
 	manager.Name = "Brihaspati"
 	manager.LogChannel = FlagLogChannel
 	manager.StatusMessageChannel = FlagLogChannel
-
 	recommended, err := manager.GetRecommendedCount()
 	if err != nil {
 		log.Fatal("Failed getting recommended shard count")
@@ -115,10 +116,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, string(data))
 	}
 	if m.Content == "^colors" { //test block
-		colorD := colors.LoadColors()
-		colorM := colors.ListColors(colorD)
 		s.ChannelMessageSend(m.ChannelID, "`List of colors:`")
-		s.ChannelMessageSend(m.ChannelID, "`"+strings.Join(colorM, ",")+"`")
+		s.ChannelMessageSend(m.ChannelID, "`"+strings.Join(ColorList(), ",")+"`")
 	}
 }
 
@@ -141,4 +140,12 @@ func DownloadFile(filepath string, url string) error {
 	// Write the body to file
 	_, err = io.Copy(out, resp.Body)
 	return err
+}
+
+func ColorMap() map[string]int {
+	return colorS.Colors
+}
+
+func ColorList() []string {
+	return colors.ListColors(colorS)
 }

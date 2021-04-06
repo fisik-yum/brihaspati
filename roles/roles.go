@@ -115,10 +115,9 @@ func CreateMuteRole(guildID string, s *discordgo.Session) bool {
 
 }
 
-func CreateNewRole(message string, guildID string, s *discordgo.Session) bool { // format ^createrole name,color
+func CreateNewRole(message string, guildID string, cMap map[string]int, s *discordgo.Session) bool { // format ^createrole name,color. include map of colors to avoid reading all the time.
 	items := strings.Split(message, ",")
 	loadC := colors.LoadColors()
-	cMap := loadC.Colors
 	if len(items) < 2 || !loadC.State {
 		return false
 	}
