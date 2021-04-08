@@ -115,12 +115,13 @@ func CreateMuteRole(guildID string, s *discordgo.Session) bool {
 
 }
 
-func CreateNewRole(message string, guildID string, cMap map[string]int, s *discordgo.Session) bool { // format ^createrole name,color. include map of colors to avoid reading all the time.
+func CreateNewRole(message string, guildID string, s *discordgo.Session) bool { // format ^createrole name,color. include map of colors to avoid reading all the time.
 	items := strings.Split(message, ",")
 	loadC := colors.LoadColors()
 	if len(items) < 2 || !loadC.State {
 		return false
 	}
+	cMap := loadC.Colors
 	name := items[0]                                                //dont strip spaces
 	color := strings.ReplaceAll(strings.ToLower(items[1]), " ", "") //strip all spaces
 

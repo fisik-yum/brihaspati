@@ -43,13 +43,7 @@ func LoadColors() ColorData {
 	}
 	m := make(map[string]int)
 	for x := 0; x < len(colors); x += 2 { //load all colors into a map. Each color is an even index[inc. 0], while each color value is an odd index.
-		val, err := strconv.Atoi(colors[x+1])
-		if err != nil {
-			break
-		}
-		if x%2 == 1 {
-			continue
-		}
+		val, _ := strconv.Atoi(colors[x+1])
 		m[colors[x]] = val
 	}
 	x := ColorData{

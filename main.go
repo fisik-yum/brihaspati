@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 
@@ -21,11 +22,9 @@ import (
 var (
 	FlagToken      string
 	FlagLogChannel string
-	colorS         colors.ColorData
 )
 
 func main() {
-
 	flag.StringVar(&FlagToken, "t", "", "Discord token")
 	flag.StringVar(&FlagLogChannel, "c", "", "Log channel, optional")
 	flag.Parse()
@@ -40,13 +39,29 @@ func main() {
 	if !strings.HasPrefix(FlagToken, "Bot ") {
 		log.Fatal("dshardmanager only works on bot accounts, did you forget to add `Bot ` before the token?")
 	}
-	fileUrl := "https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt"
-	err := DownloadFile("help.txt", fileUrl)
-	if err != nil {
-		panic(err)
+
+	_, err := os.Stat("users")
+	if os.IsNotExist(err) {
+		errDir := os.MkdirAll("users", 0755)
+		if errDir != nil {
+			log.Fatal(err)
+		}
+	}
+	_, err = os.Stat("guilds")
+	if os.IsNotExist(err) {
+		errDir := os.MkdirAll("guilds", 0755)
+		if errDir != nil {
+			log.Fatal(err)
+		}
 	}
 
-	_, err = os.Stat("test")
+	_, err = os.Stat("resources")
+	if os.IsNotExist(err) {
+		errDir := os.MkdirAll("resources", 0755)
+		if errDir != nil {
+			log.Fatal(err)
+		}
+	}
 
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll("users", 0755)
@@ -56,7 +71,17 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	colorS = colors.LoadColors() //cache colors on startup
+
+	fileUrl := "https://raw.githubusercontent.com/fisik-yum/brihaspati/main/help.txt" //get latest help file
+	err = DownloadFile("help.txt", fileUrl)
+	if err != nil {
+		panic(err)
+	}
+	fileUrl = "https://raw.githubusercontent.com/fisik-yum/brihaspati/main/resources/colors.csv" //get latest color palette
+	err = DownloadFile(filepath.Join(".", "resources", "colors.csv"), fileUrl)
+	if err != nil {
+		panic(err)
+	}
 
 	manager := dshardmanager.New(FlagToken)
 	manager.Name = "Brihaspati"
@@ -117,7 +142,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	if m.Content == "^colors" { //test block
 		s.ChannelMessageSend(m.ChannelID, "`List of colors:`")
-		s.ChannelMessageSend(m.ChannelID, "`"+strings.Join(ColorList(), ",")+"`")
+		s.ChannelMessageSend(m.ChannelID, "`"+strings.Join(colors.ListColors(colors.LoadColors()), ",")+"`")
 	}
 }
 
@@ -140,12 +165,4 @@ func DownloadFile(filepath string, url string) error {
 	// Write the body to file
 	_, err = io.Copy(out, resp.Body)
 	return err
-}
-
-func ColorMap() map[string]int {
-	return colorS.Colors
-}
-
-func ColorList() []string {
-	return colors.ListColors(colorS)
 }
